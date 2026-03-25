@@ -1,9 +1,12 @@
 import { GoogleGenAI } from "@google/genai";
 import { PromptInputs, AppSettings } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-
 export async function generateMasterPrompt(inputs: PromptInputs, settings: AppSettings) {
+  if (!settings.geminiApiKey) {
+    throw new Error("Gemini API Key is required. Please add it in Settings.");
+  }
+
+  const ai = new GoogleGenAI({ apiKey: settings.geminiApiKey });
   const model = settings.geminiModel || "gemini-3-flash-preview";
   
   const systemInstruction = `You are a Master Prompt Engineer. Your task is to take user inputs (text and images) and construct a "Master Prompt" following a specific structural framework.

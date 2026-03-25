@@ -94,6 +94,12 @@ export default function App() {
         }
         result = await generateWithHuggingFace(inputs, settings);
       } else {
+        if (!settings.geminiApiKey) {
+          alert('Please provide a Gemini API Key in Settings');
+          setShowSettings(true);
+          setIsGenerating(false);
+          return;
+        }
         result = await generateMasterPrompt(inputs, settings);
       }
       setGeneratedPrompt(result);
@@ -365,7 +371,7 @@ export default function App() {
               </a>
             </div>
             <p className="text-[9px] font-mono text-white/10 uppercase tracking-tighter">
-              Engine: <span className="text-blue-500/50">{settings.engine.toUpperCase()}</span> // Model: <span className="text-white/30">{settings.engine === 'gemini' ? settings.geminiModel : settings.hfModel.split('/').pop()}</span>
+              Engine: <span className="text-blue-500/50">{settings.engine.toUpperCase()}</span> // Model: <span className="text-white/30">{settings.engine === 'gemini' ? settings.geminiModel : settings.hfModel.split('/').pop()}</span> // API: <span className={settings.engine === 'gemini' ? (settings.geminiApiKey ? 'text-green-500/50' : 'text-red-500/50') : (settings.hfApiKey ? 'text-green-500/50' : 'text-red-500/50')}>{settings.engine === 'gemini' ? (settings.geminiApiKey ? 'SET' : 'MISSING') : (settings.hfApiKey ? 'SET' : 'MISSING')}</span>
             </p>
           </div>
         </section>
@@ -447,7 +453,24 @@ export default function App() {
                   )}
                 </div>
 
-                {/* API Key (Only for HF) */}
+                {/* Gemini API Key */}
+                {settings.engine === 'gemini' && (
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-mono uppercase text-white/40">Gemini API Key</label>
+                    <input 
+                      type="password"
+                      value={settings.geminiApiKey}
+                      onChange={(e) => setSettings(s => ({ ...s, geminiApiKey: e.target.value }))}
+                      placeholder="Enter your Gemini API key..."
+                      className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-xs font-mono focus:outline-none focus:border-blue-500/50"
+                    />
+                    <p className="text-[9px] text-white/20 leading-tight">
+                      Get your API key from <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">Google AI Studio</a>
+                    </p>
+                  </div>
+                )}
+
+                {/* Hugging Face API Key */}
                 {settings.engine === 'huggingface' && (
                   <div className="space-y-3">
                     <label className="text-[10px] font-mono uppercase text-white/40">HF API Key</label>
@@ -459,7 +482,7 @@ export default function App() {
                       className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-xs font-mono focus:outline-none focus:border-orange-500/50"
                     />
                     <p className="text-[9px] text-white/20 leading-tight">
-                      Gemini API key is managed by the platform secrets. HF keys are stored locally in session.
+                      Get your API key from <a href="https://huggingface.co/settings/tokens" target="_blank" rel="noopener noreferrer" className="text-orange-400 hover:underline">Hugging Face</a>
                     </p>
                   </div>
                 )}

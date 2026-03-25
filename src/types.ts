@@ -17,6 +17,7 @@ export interface PromptInputs {
 export interface AppSettings {
   engine: 'gemini' | 'huggingface';
   geminiModel: string;
+  geminiApiKey: string;
   hfModel: string;
   hfApiKey: string;
 }
@@ -40,6 +41,7 @@ export const initialInputs: PromptInputs = {
 export const initialSettings: AppSettings = {
   engine: 'gemini',
   geminiModel: 'gemini-3-flash-preview',
+  geminiApiKey: '',
   hfModel: 'mistralai/Mistral-7B-Instruct-v0.3',
   hfApiKey: ''
 };
